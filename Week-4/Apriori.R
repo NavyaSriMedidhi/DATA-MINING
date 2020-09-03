@@ -1,0 +1,23 @@
+x<-read.csv("votes.csv", FALSE)
+x
+library(arules)
+library(arulesViz)
+x1<-read.transactions("votes.csv", sep = ',')
+x1
+str(x1)
+summary(x1)
+inspect(x1)
+itemFrequency(x1)
+itemFrequency(x1[,1:3])
+itemFrequency(x1[,'democrat'])
+itemFrequency(x1[,'republican'])
+itemFrequencyPlot(x1, support = 0.1)
+dev.off()
+image(x1[1:5])
+image(sample(x1,100))
+xrules<-apriori(x1)
+xrules<-apriori(x1,parameter = list(support = 0.006, conf = .25, minlen =2))
+summary(xrules)
+xrules
+inspect(xrules)
+inspect(xrules[1:10])
