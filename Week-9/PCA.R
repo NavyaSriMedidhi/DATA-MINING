@@ -1,0 +1,51 @@
+mtcars<- read.csv("mtcars.csv")
+mtcars
+summary(mtcars)
+str(mtcars)
+mtcars1<-mtcars[,-1]
+str(mtcars1)
+rownames(mtcars1)=c("Mazda RX4","Mazda RX4 Wag","Datsun 710","Hornet 4 Drive","Hornet Sportabout","Valiant","Duster 360","Merc 240D","Merc 230","Merc 280","Merc 280C","Merc 450SE","Merc 450SL","Merc 450SLC","Cadillac Fleetwood","Lincoln Continental","Chrysler Imperial","Fiat 128","Honda Civic","Toyota Corolla","Toyota Corona","Dodge Challenger","AMC Javelin","Camaro Z28","Pontiac Firebird","Fiat X1-9","Porsche 914-2","Lotus Europa","Ford Pantera L","Ferrari Dino","Maserati Bora","Volvo 142E")
+mtcars_pca<-prcomp(mtcars1, scale. = FALSE)
+mtcars_pca1<-prcomp(mtcars1, scale. = TRUE)
+summary(mtcars_pca)
+summary(mtcars_pca1)
+str(mtcars_pca)
+str(mtcars_pca1)
+install.packages("devtools")
+library(devtools)
+install.packages("remotes")
+remotes::install_github("vqv/ggbiplot")
+library(ggbiplot)
+ggbiplot(mtcars_pca, labels = rownames(mtcars))
+ggbiplot(mtcars_pca1, labels = rownames(mtcars))
+names(mtcars_pca)
+names(mtcars_pca1)
+mtcars.country <- c(rep("Japan", 3), rep("US",4), rep("Europe", 7),rep("US",3), "Europe", rep("Japan", 3), rep("US",4), rep("Europe", 3), "US", rep("Europe", 3))
+ggbiplot(mtcars_pca1,ellipse=TRUE,  labels=rownames(mtcars), groups=mtcars.country)
+relation<-cor(mtcars1)
+relation[1,]
+mtcars_pca1$center
+sampledata<-c(20, 6, 425, 200, 3.75, 2, 16.5, 1, 0, 4, 1)
+mtcarsplus<-rbind(mtcars1, sampledata)
+mtcars.countryplus<-c(mtcars.country, "Jupiter")
+mtcarsplus.pca <- prcomp(mtcarsplus, center = TRUE,scale. = TRUE)
+ggbiplot(mtcarsplus.pca, obs.scale = 1, var.scale = 1, ellipse = TRUE, circle = FALSE, var.axes=TRUE, labels=c(rownames(mtcars), "spacecar"), groups=mtcars.countryplus)+ scale_colour_manual(name="Origin", values= c("forest green", "red3", "violet", "dark blue"))+ ggtitle("PCA of mtcars dataset, with extra sample added")+theme_minimal()+theme(legend.position = "bottom")
+s.sc <- scale(t(sampledata), center= mtcars_pca1$center)
+s.pred <- s.sc %*% mtcars_pca1$rotation
+mtcars.plusproj.pca <- mtcars_pca1
+mtcars.plusproj.pca$x <- rbind(mtcars.plusproj.pca$x, s.pred)
+ggbiplot(mtcars.plusproj.pca, obs.scale = 1, var.scale = 1, ellipse = TRUE, circle = FALSE, var.axes=TRUE, labels=c(rownames(mtcars), "spacecar"), groups=mtcars.countryplus)+ scale_colour_manual(name="Origin", values= c("forest green", "red3", "violet", "dark blue"))+ ggtitle("PCA of mtcars dataset, with extra sample projected")+ theme_minimal()+ theme(legend.position = "bottom")
+mtcarsplus.pca
+fit0<-lm(mpg~cyl, data = mtcars1)
+summary(fit0)
+fit1<-lm(mpg ~disp, data = mtcars1)
+summary(fit1)
+fit2<-lm(mpg~cyl+disp,data=mtcars1)
+summary(fit2)
+fit3<-lm(mpg~cyl+disp+hp, data = mtcars1)
+summary(fit3)
+fit4<-lm(mpg~cyl+disp+hp+wt, data = mtcars1)
+summary(fit4)
+anova(fit0, fit1, fit2, fit3, fit4)
+
+
