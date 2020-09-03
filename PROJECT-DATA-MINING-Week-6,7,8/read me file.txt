@@ -1,0 +1,38 @@
+1) Load the training data set 
+	data_Train = read.csv(file.choose(),header=T)  
+2)Load test dat set
+	data_Test = read.csv(file.choose(),header=T)
+3) As there are some missing values in both test and train data sets, We	 used below commands to replace missing values
+	library(dplyr)  - This is used to load the libraries for mutate function
+
+data_Train <-  data_Train %>% mutate (Item_Weight=replace(Item_Weight,Item_Weight=='',median(data_Train$Item_Weight)))
+
+data_Train <-  data_Train %>% mutate (Outlet_Size=replace(Outlet_Size,Outlet_Size=='',NA))
+
+data_Test <-  data_Test %>% mutate (Item_Weight=replace(Item_Weight,Item_Weight=='',median(data_Test$Item_Weight)))
+
+data_Test <-  data_Test %>% mutate (Outlet_Size=replace(Outlet_Size,Outlet_Size=='',NA))
+
+4) Make a scatter plot on how sales price depends and Item_Type related
+	scatter.smooth(x=data_Train$Item_Type,y=data_Train$Item_Outlet_Sales,main=" item wise sales in outlets ")
+
+5)Create a Linear regression model to get Item_Outlet_Sales based on Item_Identifier and Outlet_Identifier
+	model1 <- lm(Item_Outlet_Sales ~ Item_Identifier+Outlet_Identifier,data = data_Train)
+
+6)
+Display the summary of model we created
+	summary(model1)
+
+7)plot the model to display the graphical representation
+	plot(model1)
+
+8)Predict the sales from test data set using below predict function. It uses sales values from training data set and it does predict the sales for test data.
+	prediction <- predict(model1,data_Test,interval = 'confidence')
+
+9)Display the values what we have prediction .It does give three values. One is approx value, econd one is minimum value and third is maximum value.
+	prediction
+
+10) write the values which were predicted into csv file
+	setwd("~/data mining/project")
+	write.csv(prediction,"predictionresult.csv")
+
